@@ -2,7 +2,6 @@
 
 def getallFeatures(data_dict):
     features_list = data_dict.itervalues().next().keys()
-    print features_list
     features_list.remove('poi')
     features_list.remove('email_address')
     features_list.insert(0, 'poi')
@@ -21,19 +20,22 @@ def outlierRegression(features_train, labels_train):
     cls = linear_model.LinearRegression()
 
     reg = cls.fit(features_train, labels_train)
-
     print reg.intercept_
     print reg.coef_
     predictions = reg.predict(features_train)
     return predictions
 
+# Doesn't work - we use classification, not regression
 def outlierCleaner(predictions, features_train, labels_train, amount_omitted = 0.1):
     '''
     Run the outlier cleaner on the training data and the labels. Check results by viewing
     residuals of each row. Omit highest residuals. The amount omitted is in percentages.
     '''
+    # Outlier ideas:
+    #  plot distributions?
+    #
     cleaned_data = map(lambda x,y,z:(x,y,z),
-                       features, labels, (predictions-net_worths)**2)
+                       features_train, labels_train, (predictions-labels_train)**2)
 
     cleaned_data.sort(key=lambda x:x[2])
     # Mean of the cleaned_data residuals:
