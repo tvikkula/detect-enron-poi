@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import numpy as np
 
 def getallFeatures(data_dict):
     features_list = data_dict.itervalues().next().keys()
@@ -11,6 +12,12 @@ def trainTestSplit(features, labels, test_size=0.3):
     from sklearn.cross_validation import train_test_split
     features_train, features_test, labels_train, labels_test = \
         train_test_split(features, labels, test_size=test_size, random_state=42)
+
+def minmaxScale(data):
+    mins = np.min(data, axis=0)
+    maxs = np.max(data, axis=0)
+    data_normal = (data-mins)/(maxs-mins)
+    return data_normal
 
 def outlierRegression(features_train, labels_train):
     '''
@@ -25,7 +32,7 @@ def outlierRegression(features_train, labels_train):
     predictions = reg.predict(features_train)
     return predictions
 
-# Doesn't work - we use classification, not regression
+# Note: Only use this for regression problems
 def outlierCleaner(predictions, features_train, labels_train, amount_omitted = 0.1):
     '''
     Run the outlier cleaner on the training data and the labels. Check results by viewing
