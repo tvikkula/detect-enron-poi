@@ -2,37 +2,27 @@
 
 import sys
 import pickle
+import pprint
 sys.path.append("./tools/")
 from preprocess import *
-from feature_format import featureFormat, targetFeatureSplit
+from feature_format import targetFeatureSplit
 from tester import dump_classifier_and_data
 
-### Task 1: Select what features you'll use.
-### features_list is a list of strings, each of which is a feature name.
-### The first feature must be "poi".
-## Select all features?
+### Load the numpy array with the dataset
+data = np.load('enrondata_normalized.npy')
 
-#features_list = ['poi','salary'] # You will need to use more features
-
-### Load the dictionary containing the dataset
-data_dict = pickle.load(open("final_project_dataset.pkl", "r") )
-
-### Task 2: Remove outliers
-
-### Task 3: Create new feature(s)
-### Store to my_dataset for easy export below.
-my_dataset = data_dict
-
-features_list = getallFeatures(my_dataset)
-### Extract features and labels from dataset for local testing
-data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
-
+# Change labels to ints:
+labels = map(lambda x: int(x), labels)
+#pprint.pprint(labels)
+print len(labels)
+print len(features)
+print len(features[0])
 features_train, features_test, labels_train, labels_test = \
     trainTestSplit(features, labels, test_size=0.3)
 
-cleaned_data = outlierCleaner(outlierRegression(features_train, labels_train), \
-                                  features_train, labels_train)
+# Get feature importance:
+getFeatureImportance(features_train, labels_train)
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,

@@ -10,14 +10,21 @@ def getallFeatures(data_dict):
 
 def trainTestSplit(features, labels, test_size=0.3):
     from sklearn.cross_validation import train_test_split
-    features_train, features_test, labels_train, labels_test = \
-        train_test_split(features, labels, test_size=test_size, random_state=42)
+    return train_test_split(features, labels, test_size=test_size, random_state=42)
 
 def minmaxScale(data):
     mins = np.min(data, axis=0)
     maxs = np.max(data, axis=0)
     data_normal = (data-mins)/(maxs-mins)
     return data_normal
+
+def getFeatureImportance(features_train, labels_train):
+    from sklearn.feature_selection import SelectKBest, f_classif
+    selector = SelectKBest(f_classif, k = 19)
+    selector.fit(features_train, labels_train)
+    print selector.scores_
+    print selector.pvalues_
+    ### Extend function to return a sorted list with keysnames and scores_&pvalues_.
 
 def outlierRegression(features_train, labels_train):
     '''
