@@ -4,36 +4,48 @@ import sys
 import pickle
 import pprint
 sys.path.append("./tools/")
+sys.path.append("./learning/")
 from preprocess import *
+import ClassifyNB
 from feature_format import targetFeatureSplit
-from tester import dump_classifier_and_data
+from tester import test_classifier
 
 ### Load the numpy array with the dataset
 data = np.load('enrondata_normalized.npy')
+features_list = np.load('features_list.npy')
+
+# meh..
+features_only_list = np.delete(features_list, 0)
+print features_only_list
 
 labels, features = targetFeatureSplit(data)
-# Change labels to ints:
-labels = map(lambda x: int(x), labels)
-#pprint.pprint(labels)
-print len(labels)
-print len(features)
-print len(features[0])
+
 features_train, features_test, labels_train, labels_test = \
     trainTestSplit(features, labels, test_size=0.3)
 
 # Get feature importance:
-getFeatureImportance(features_train, labels_train)
+importance = getFeatureImportance(features_train, labels_train, features_only_list)
+pprint.pprint(importance)
+
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
 ### you'll need to use Pipelines. For more info:
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
-# Provided to give you a starting point. Try a variety of classifiers.
-#from sklearn.naive_bayes import GaussianNB
-#clf = GaussianNB()
+nbfit = ClassifyNB.classify(features_train, labels_train)
 
-### Task 5: Tune your classifier to achieve better than .3 precision and recall 
+### Probably better to test with precision and recall:
+test_classifier(nbfit, data)
+
+
+
+
+
+
+
+
+### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
 ### function. Because of the small size of the dataset, the script uses
