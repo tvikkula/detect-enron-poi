@@ -6,13 +6,13 @@ import pprint
 sys.path.append("./tools/")
 sys.path.append("./learning/")
 from preprocess import *
-import ClassifyNB
+import ClassifyNB, ClassifySVM, RFClassifier
 from feature_format import targetFeatureSplit
 from tester import test_classifier
 
 ### Load the numpy array with the dataset
-data = np.load('enrondata_normalized.npy')
-features_list = np.load('features_list.npy')
+data = np.load('data/enrondata_normalized.npy')
+features_list = np.load('data/features_list.npy')
 
 # meh..
 features_only_list = np.delete(features_list, 0)
@@ -33,11 +33,16 @@ pprint.pprint(importance)
 ### you'll need to use Pipelines. For more info:
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
-nbfit = ClassifyNB.classify(features_train, labels_train)
-
+nbfit = ClassifyNB.train(features_train, labels_train)
+svmfit = ClassifySVM.train(features_train, labels_train)
+rffit = RFClassifier.train(features_train, labels_train)
 ### Probably better to test with precision and recall:
+print 'Naive bayes:'
 test_classifier(nbfit, data)
-
+print 'SVM:'
+test_classifier(svmfit, data)
+print 'Random Forest:'
+test_classifier(rffit, data)
 
 
 
