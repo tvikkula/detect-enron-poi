@@ -3,12 +3,14 @@
 import sys
 import pickle
 import pprint
+import numpy as np
 sys.path.append("./tools/")
 sys.path.append("./learning/")
 from preprocess import *
 import ClassifyNB, ClassifySVM, RFClassifier
 from feature_format import targetFeatureSplit
 from tester import test_classifier
+import matplotlib.pyplot as plt
 
 ### Load the numpy array with the dataset
 data = np.load('data/enrondata_normalized.npy')
@@ -21,11 +23,15 @@ print features_only_list
 labels, features = targetFeatureSplit(data)
 
 features_train, features_test, labels_train, labels_test = \
-    trainTestSplit(features, labels, test_size=0.3)
+    stratifiedShuffleSplit(features, labels)
 
 # Get feature importance:
 importance = getFeatureImportance(features_train, labels_train, features_only_list)
-pprint.pprint(importance)
+### Create a plot of the featureimportance
+plt.figure()
+plt.bar(np.arange(19), [i[1] for i in importance])
+plt.xticks(np.arange(0.5, 19, 1), [i[0] for i in importance], rotation=90)
+plt.show()
 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
@@ -33,9 +39,22 @@ pprint.pprint(importance)
 ### you'll need to use Pipelines. For more info:
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
+# Do some hyperparam validation:
+best_svc, svc_grid_scores = ClassifySVM.gridsearch(features_train, labels_train)
+print("Best SVMC estimator found by grid search:")
+pprint.pprint(best_svc)
+#pprint.pprint(svc_grid_scores[0:10])
+best_rfc, rfc_grid_scores = RFClassifier.gridsearch(features_train, labels_train)
+print("Best RFC estimator found by grid search:")
+pprint.pprint(best_rfc)
+#pprint.pprint(rfc_grid_scores[0:10])
+### Gridsearch is incredibly messed up due to lack of data.
+
+# Do fits based on hyperparam validation
 nbfit = ClassifyNB.train(features_train, labels_train)
-svmfit = ClassifySVM.train(features_train, labels_train)
-rffit = RFClassifier.train(features_train, labels_train)
+svmfit = ClassifySVM.train(features_train, labels_train, best_svc)
+rffit = RFClassifier.train(features_train, labels_train, best_rfc)
+
 ### Probably better to test with precision and recall:
 print 'Naive bayes:'
 test_classifier(nbfit, data)
@@ -44,6 +63,7 @@ test_classifier(svmfit, data)
 print 'Random Forest:'
 test_classifier(rffit, data)
 
+# Linear SVM and Naive Bayes seems to be best.
 
 
 

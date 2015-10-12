@@ -8,9 +8,25 @@ def getallFeatures(data_dict):
     features_list.insert(0, 'poi')
     return features_list
 
-def trainTestSplit(features, labels, test_size=0.3):
+def trainTestSplit(features, labels, test_size=0.2):
     from sklearn.cross_validation import train_test_split
     return train_test_split(features, labels, test_size=test_size, random_state=42)
+
+def stratifiedShuffleSplit(features, labels, folds=1000):
+    from sklearn.cross_validation import StratifiedShuffleSplit
+    cv = StratifiedShuffleSplit(labels, folds, random_state = 42)
+    for train_idx, test_idx in cv:
+        features_train = []
+        features_test  = []
+        labels_train   = []
+        labels_test    = []
+        for ii in train_idx:
+            features_train.append( features[ii] )
+            labels_train.append( labels[ii] )
+        for jj in test_idx:
+            features_test.append( features[jj] )
+            labels_test.append( labels[jj] )
+    return features_train, features_test, labels_train, labels_test
 
 def minmaxScale(data):
     mins = np.min(data, axis=0)
