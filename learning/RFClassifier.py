@@ -19,7 +19,7 @@ def test(features_test, labels_test, model):
                          
 def gridsearch(features_train, labels_train):
     clf = RandomForestClassifier(
-        n_estimators = 10,
+        n_estimators = 20,
         n_jobs = -1
     )
     param_grid = {
