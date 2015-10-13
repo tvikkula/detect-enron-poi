@@ -10,6 +10,10 @@
     that process should happen at the end of poi_id.py
 """
 
+""" Pondering: Detecting a POI is likely a case where
+    Having too many POIs is likely beneficial? Better to
+    have more false positives than false negatives! YES
+"""
 import pickle
 import sys
 from sklearn.cross_validation import StratifiedShuffleSplit

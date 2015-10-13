@@ -1,5 +1,10 @@
 #!/usr/bin/python
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+
+# So that pyplot axis labels don't overflow out of screen
+rcParams.update({'figure.autolayout': True})
 
 def getallFeatures(data_dict):
     features_list = data_dict.itervalues().next().keys()
@@ -36,12 +41,18 @@ def minmaxScale(data):
 
 def getFeatureImportance(features_train, labels_train, features_list):
     from sklearn.feature_selection import SelectKBest, f_classif
-    selector = SelectKBest(f_classif, k = 19)
+    selector = SelectKBest(f_classif, k = len(features_list))
     selector.fit(features_train, labels_train)
     ### Extend function to return a sorted list with keysnames and scores_&pvalues_.
     scores = zip(features_list, selector.scores_, selector.pvalues_)
     scores.sort(key = lambda x: x[1], reverse=True)
     return scores
+
+def plotFeatureImportance(importance, features_only_list):
+    plt.figure()
+    plt.bar(np.arange(len(features_only_list)), [i[1] for i in importance])
+    plt.xticks(np.arange(0.5, len(features_only_list), 1), [i[0] for i in importance], rotation=90)
+    plt.show()
 
 def outlierRegression(features_train, labels_train):
     '''

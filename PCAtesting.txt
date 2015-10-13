@@ -1,0 +1,15 @@
+Testing number of PCA components:
+
+n = 1:
+f1 = 0.37389, f2 = 0.46513
+
+n = 2 = 3:
+f1 = 0.42076, f2 = 0.58752
+
+n = 4:
+f1 = 0.35184, f2 = 0.43032
+
+n = MAX_FEATURES:
+f1 = 0.35131, f2 = 0.42250
+
+-> 2 & 3 seems best # of principle components.
