@@ -5,3 +5,4 @@ Poista huonot featuret! Sulla on kehissä algo siihen.
 Yritä ilman scalingia! Ei SVM:lle! Lopuille ilman
 
 Käytä lopussa kuitenkin PCA.
+

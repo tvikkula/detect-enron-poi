@@ -15,6 +15,10 @@ from tester import test_classifier
 data = np.load('data/enrondata_normalized.npy')
 features_list = np.load('data/features_list.npy')
 
+# Drop features:
+deletables = ['other', 'from_messages', 'loan_advances', 'deferral_payments',\
+              'to_messages', 'restricted_stock_deferred']
+
 # Add the principal components
 
 # Create a list of feature names, handy for plot labeling etc.
@@ -29,12 +33,12 @@ features_train, features_test, labels_train, labels_test = \
 pca = PCA.doPCA(features_train, n = 3)
 transformed_train = pca.transform(features_train)
 transformed_test = pca.transform(features_test)
-features_train = transformed_train
-features_test = transformed_test
+#features_train = transformed_train
+#features_test = transformed_test
 PCA.plotPCA(transformed_train)
 
 # Now we have only PCA features:
-features_only_list = ['pca'+str(i) for i in range(len(features_train[0]))]
+#features_only_list = ['pca'+str(i) for i in range(len(features_train[0]))]
 print features_only_list
 ## PCA as new features yeilded the same results
 ## Using PCA only yeilded better results with an SVM. The decision boundary was made
@@ -55,24 +59,24 @@ best_svc, svc_grid_scores = ClassifySVM.gridsearch(features_train, labels_train)
 print("Best SVMC estimator found by grid search:")
 pprint.pprint(best_svc)
 #pprint.pprint(svc_grid_scores[0:10])
-best_rfc, rfc_grid_scores = RFClassifier.gridsearch(features_train, labels_train)
-print("Best RFC estimator found by grid search:")
-pprint.pprint(best_rfc)
+#best_rfc, rfc_grid_scores = RFClassifier.gridsearch(features_train, labels_train)
+#print("Best RFC estimator found by grid search:")
+#pprint.pprint(best_rfc)
 #pprint.pprint(rfc_grid_scores[0:10])
 ### Gridsearch is incredibly messed up due to lack of data.
 
 # Do fits based on hyperparam validation
 nbfit = ClassifyNB.train(features_train, labels_train)
 svmfit = ClassifySVM.train(features_train, labels_train, best_svc)
-rffit = RFClassifier.train(features_train, labels_train, best_rfc)
+#rffit = RFClassifier.train(features_train, labels_train, best_rfc)
 
 ### Probably better to test with precision and recall:
 print 'Naive bayes:'
 test_classifier(nbfit, data)
 print 'SVM:'
 test_classifier(svmfit, data)
-print 'Random Forest:'
-test_classifier(rffit, data)
+#print 'Random Forest:'
+#test_classifier(rffit, data)
 
 # Linear SVM and Naive Bayes seems to be best.
 
