@@ -39,20 +39,19 @@ def minmaxScale(data):
     data_normal = (data-mins)/(maxs-mins)
     return data_normal
 
-def getFeatureImportance(features_train, labels_train, features_list):
+def getFeatureImportance(features_train, labels_train, features_list, k):
     from sklearn.feature_selection import SelectKBest, f_classif
-    selector = SelectKBest(f_classif, k = len(features_list))
+    selector = SelectKBest(f_classif, k)
     selector.fit(features_train, labels_train)
     ### Extend function to return a sorted list with keysnames and scores_&pvalues_.
     scores = zip(features_list, selector.scores_, selector.pvalues_)
     scores.sort(key = lambda x: x[1], reverse=True)
-    return scores
+    return scores, selector
 
-def plotFeatureImportance(importance, features_only_list):
-    plt.figure()
+def plotFeatureImportance(importance, features_only_list, plt):
     plt.bar(np.arange(len(features_only_list)), [i[1] for i in importance])
     plt.xticks(np.arange(0.5, len(features_only_list), 1), [i[0] for i in importance], rotation=90)
-    plt.show()
+    return plt
 
 def outlierRegression(features_train, labels_train):
     '''

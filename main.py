@@ -13,16 +13,24 @@ from tester import test_classifier
 
 ### Load the numpy array with the dataset
 data = np.load('data/enrondata_normalized.npy')
-features_list = np.load('data/features_list.npy')
+features_list = np.load('data/features_list.npy').tolist()
 
 # Drop features:
-deletables = ['other', 'from_messages', 'loan_advances', 'deferral_payments',\
-              'to_messages', 'restricted_stock_deferred']
+deletables = ['other', 'from_messages', 'loan_advances', 'deferral_payments', \
+              'total_payments', 'deferred_income', 'total_stock_value',\
+              'from_this_person_to_poi', 'exercised_stock_options',\
+              'bonus', 'long_term_incentive',\
+              'restricted_stock',\
+              'to_messages']
+for deletable in deletables:
+    data = np.delete(data, features_list.index(deletable), 0)
+    features_list.remove(deletable)
 
 # Add the principal components
 
 # Create a list of feature names, handy for plot labeling etc.
-features_only_list = np.delete(features_list, 0)
+features_only_list = features_list
+features_only_list.remove('poi')
 
 labels, features = targetFeatureSplit(data)
 
@@ -35,7 +43,7 @@ transformed_train = pca.transform(features_train)
 transformed_test = pca.transform(features_test)
 #features_train = transformed_train
 #features_test = transformed_test
-PCA.plotPCA(transformed_train)
+#PCA.plotPCA(transformed_train)
 
 # Now we have only PCA features:
 #features_only_list = ['pca'+str(i) for i in range(len(features_train[0]))]
@@ -46,8 +54,9 @@ print features_only_list
 
 # Get feature importance:
 importance = getFeatureImportance(features_train, labels_train, features_only_list)
-plotFeatureImportance(importance, features_only_list)
-
+plt.figure()
+plotFeatureImportance(importance, features_only_list, plt)
+plt.show()
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
@@ -63,7 +72,7 @@ pprint.pprint(best_svc)
 #print("Best RFC estimator found by grid search:")
 #pprint.pprint(best_rfc)
 #pprint.pprint(rfc_grid_scores[0:10])
-### Gridsearch is incredibly messed up due to lack of data.
+
 
 # Do fits based on hyperparam validation
 nbfit = ClassifyNB.train(features_train, labels_train)

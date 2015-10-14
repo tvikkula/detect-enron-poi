@@ -5,7 +5,7 @@ from sklearn.grid_search import GridSearchCV
 def train(features_train, labels_train, rfc = None):
     if (rfc == None):
         rfc = RandomForestClassifier(
-            n_estimators = 10, min_samples_split = 2,
+            n_estimators = 2, min_samples_split = 2,
             n_jobs = -1, criterion = 'entropy',
             max_features = None
         )
