@@ -17,9 +17,9 @@ def test(features_test, labels_test, model):
     acc = accuracy_score(pred, labels_test)
     return acc
                          
-def gridsearch(features_train, labels_train):
+def gridsearch(features_train, labels_train, n):
     clf = RandomForestClassifier(
-        n_estimators = 20,
+        n_estimators = n,
         n_jobs = -1
     )
     param_grid = {
