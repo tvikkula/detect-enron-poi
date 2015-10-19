@@ -1,6 +1,5 @@
 from __future__ import division
 import pickle
-import pprint
 
 data_dict = pickle.load(open("data/final_project_dataset.pkl", "r") )
 # Remove outliers:

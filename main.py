@@ -38,16 +38,21 @@ features_train, features_test, labels_train, labels_test = \
 # Get feature importance:
 importance, selector = getFeatureImportance(features_train, labels_train, features_only_list, k = 8)
 
-selector_train = selector.transform(features_train)
+features_train = selector.transform(features_train)
+
+### Do some PCA
+#pca = PCA.doPCA(features_train, n = 4)
+#features_train = pca.transform(features_train)
+#features_test = pca.transform(features_test)
 
 # Do some hyperparam validation:
-best_svc, svc_grid_scores = ClassifySVM.gridsearch(selector_train, labels_train)
+best_svc, svc_grid_scores = ClassifySVM.gridsearch(features_train, labels_train)
+pprint.pprint(best_svc)
 
-
-svmfit = ClassifySVM.train(selector_train, labels_train, best_svc)
+svmfit = ClassifySVM.train(features_train, labels_train, best_svc)
 
 print 'SVM:'
 test_classifier(svmfit, data)
 
-data_dict = pickle.load(open("data/own_data_dict.pkl", "r") )
-dump_classifier_and_data(svmfit, data_dict, features_list)
+#data_dict = pickle.load(open("data/own_data_dict.pkl", "r") )
+#dump_classifier_and_data(svmfit, data_dict, features_list)
