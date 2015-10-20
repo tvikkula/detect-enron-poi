@@ -1,8 +1,0 @@
-Ideoita: 
-
-Tee featureita emaileista: Joku viestien määrä poi:lle jne.
-Poista huonot featuret! Sulla on kehissä algo siihen.
-Yritä ilman scalingia! Ei SVM:lle! Lopuille ilman
-
-Käytä lopussa kuitenkin PCA.
-

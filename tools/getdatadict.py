@@ -1,10 +1,14 @@
 from __future__ import division
 import pickle
 
-data_dict = pickle.load(open("data/final_project_dataset.pkl", "r") )
+data_dict = pickle.load(open("../data/final_project_dataset.pkl", "r") )
 # Remove outliers:
 data_dict.pop('TOTAL', None)
 data_dict.pop('THE TRAVEL AGENCY IN THE PARK', None)
+
+# Create data_dict with no features:
+pickle.dump(data_dict, open('../data/data_dict_no_new_feature.pkl', "w") )
+
 # Add that one feature:
 for key,value in data_dict.iteritems():
     if value['from_this_person_to_poi'] == 'NaN':
@@ -23,4 +27,4 @@ for key,value in data_dict.iteritems():
                                      (int(value['to_messages'])+\
                                      int(value['from_messages']))
 
-pickle.dump(data_dict, open('data/own_data_dict.pkl', "w") )
+pickle.dump(data_dict, open('../data/own_data_dict.pkl', "w") )
