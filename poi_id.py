@@ -8,7 +8,7 @@ sys.path.append("./learning/")
 from preprocess import *
 import ClassifyNB, ClassifySVM, RFClassifier, PCA
 from feature_format import targetFeatureSplit, featureFormat
-from tester import test_classifier, dump_classifier_and_data
+from learningtester import test_classifier, dump_classifier_and_data
 
 # Ignore the new feature as it messes up PCA
 data_dict = pickle.load(open("data/data_dict_no_new_feature.pkl", "r"))

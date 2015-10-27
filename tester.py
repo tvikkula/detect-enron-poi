@@ -10,22 +10,19 @@
     that process should happen at the end of poi_id.py
 """
 
-""" Pondering: Detecting a POI is likely a case where
-    Having too many POIs is likely beneficial? Better to
-    have more false positives than false negatives! YES
-"""
 import pickle
 import sys
 from sklearn.cross_validation import StratifiedShuffleSplit
-sys.path.append("../tools/")
+sys.path.append("./tools/")
 from feature_format import featureFormat, targetFeatureSplit
 
 PERF_FORMAT_STRING = "\
-Accuracy: {:>0.{display_precision}f}, Precision: {:>0.{display_precision}f}, \
-Recall: {:>0.{display_precision}f}, F1: {:>0.{display_precision}f}, F2: {:>0.{display_precision}f}"
-RESULTS_FORMAT_STRING = "Total predictions: {:4d}, True positives: {:4d}, False positives: {:4d}, False negatives: {:4d}, True negatives: {:4d}"
+\tAccuracy: {:>0.{display_precision}f}\tPrecision: {:>0.{display_precision}f}\t\
+Recall: {:>0.{display_precision}f}\tF1: {:>0.{display_precision}f}\tF2: {:>0.{display_precision}f}"
+RESULTS_FORMAT_STRING = "\tTotal predictions: {:4d}\tTrue positives: {:4d}\tFalse positives: {:4d}\tFalse negatives: {:4d}\tTrue negatives: {:4d}"
 
-def test_classifier(clf, data, folds = 1000):
+def test_classifier(clf, dataset, feature_list, folds = 1000):
+    data = featureFormat(dataset, feature_list, sort_keys = True)
     labels, features = targetFeatureSplit(data)
     cv = StratifiedShuffleSplit(labels, folds, random_state = 42)
     true_negatives = 0
@@ -68,6 +65,7 @@ def test_classifier(clf, data, folds = 1000):
         recall = 1.0*true_positives/(true_positives+false_negatives)
         f1 = 2.0 * true_positives/(2*true_positives + false_positives+false_negatives)
         f2 = (1+2.0*2.0) * precision*recall/(4*precision + recall)
+        print clf
         print PERF_FORMAT_STRING.format(accuracy, precision, recall, f1, f2, display_precision = 5)
         print RESULTS_FORMAT_STRING.format(total_predictions, true_positives, false_positives, false_negatives, true_negatives)
         print ""
