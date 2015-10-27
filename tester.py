@@ -15,6 +15,8 @@ import sys
 from sklearn.cross_validation import StratifiedShuffleSplit
 sys.path.append("./tools/")
 from feature_format import featureFormat, targetFeatureSplit
+import numpy as np
+
 
 PERF_FORMAT_STRING = "\
 \tAccuracy: {:>0.{display_precision}f}\tPrecision: {:>0.{display_precision}f}\t\
@@ -23,6 +25,14 @@ RESULTS_FORMAT_STRING = "\tTotal predictions: {:4d}\tTrue positives: {:4d}\tFals
 
 def test_classifier(clf, dataset, feature_list, folds = 1000):
     data = featureFormat(dataset, feature_list, sort_keys = True)
+    ## Tester lacks feature scaling, lets put it here:
+
+    # Scale features:
+    mins = np.min(data, axis=0)
+    maxs = np.max(data, axis=0)
+    data = (data-mins)/(maxs-mins)
+
+
     labels, features = targetFeatureSplit(data)
     cv = StratifiedShuffleSplit(labels, folds, random_state = 42)
     true_negatives = 0
