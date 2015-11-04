@@ -2,6 +2,7 @@
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from sklearn.grid_search import GridSearchCV
+import numpy as np
 
 def train(features_train, labels_train, svc = None):
     if (svc == None):
@@ -26,3 +27,15 @@ def gridsearch(features_train, labels_train):
     # Sort by mean (note, it's using namedtuples)
     scores.sort(key=lambda x:x.mean_validation_score, reverse=True)
     return clf.best_estimator_, scores
+
+def plotGridScores(scores):
+    scores = scores[0:30]
+    from matplotlib import pyplot as plt
+    plt.bar(range(0,len(scores),1), [score.mean_validation_score for score in scores])
+    plt.xticks(np.arange(0.5, len(scores), 1),
+               [str(score.parameters.values()) for score in scores], rotation=90)
+    plt.xlabel('SVM params [kernel, C, gamma]')
+    plt.ylabel('F1 score')
+    plt.title('Grid search results for SVM')
+    plt.legend()
+    plt.show()
