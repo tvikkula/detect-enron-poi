@@ -11,18 +11,9 @@ from feature_format import targetFeatureSplit, featureFormat
 from learningtester import test_classifier, dump_classifier_and_data
 
 # Ignore the new feature as it messes up PCA
-data_dict = pickle.load(open("data/data_dict_no_new_feature.pkl", "r"))
+data_dict = pickle.load(open("data/own_data_dict.pkl", "r"))
 
-features_list = ['poi',
-                 'expenses',
-                 'director_fees',
-                 'salary',
-                 'to_messages',
-                 'restricted_stock_deferred',
-                 'from_poi_to_this_person',
-                 'shared_receipt_with_poi'
-                 ]
-
+features_list = getallFeatures(data_dict)
 data = featureFormat(data_dict, features_list, sort_keys = True)
 
 # Scale features:
@@ -35,13 +26,16 @@ labels, features = targetFeatureSplit(data)
 features_train, features_test, labels_train, labels_test = \
     stratifiedShuffleSplit(features, labels)
 
+### Do some PCA
+pca = PCA.doPCA(features_train, n = 4)
+transformed_train = pca.transform(features_train)
+
 # Do some hyperparam validation:
 best_svc, svc_grid_scores = ClassifySVM.gridsearch(
-    features_train, labels_train
+    transformed_train, labels_train
 )
-pprint.pprint(best_svc)
 
-svmfit = ClassifySVM.train(features_train, labels_train, best_svc)
+svmfit = ClassifySVM.train(transformed_train, labels_train, best_svc)
 
 test_classifier(svmfit, data)
 

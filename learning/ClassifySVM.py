@@ -29,13 +29,23 @@ def gridsearch(features_train, labels_train):
     return clf.best_estimator_, scores
 
 def plotGridScores(scores):
-    scores = scores[0:30]
+    # Strip 0 validation scores away:
+    newScores = []
+    for score in scores:
+        if (score.mean_validation_score > 0.0):
+            newScores.append(score)
+        else:
+            # Scores are sorted, we can break if we find a 0-value
+            break
+    if (len(newScores) > 30):
+        newScores = newScores[0:30]
     from matplotlib import pyplot as plt
-    plt.bar(range(0,len(scores),1), [score.mean_validation_score for score in scores])
-    plt.xticks(np.arange(0.5, len(scores), 1),
-               [str(score.parameters.values()) for score in scores], rotation=90)
+    plt.bar(range(0,len(newScores),1), [score.mean_validation_score for score in newScores])
+    plt.xticks(np.arange(0.5, len(newScores), 1),
+               [str(score.parameters.values()) for score in newScores], rotation=90)
     plt.xlabel('SVM params [kernel, C, gamma]')
     plt.ylabel('F1 score')
     plt.title('Grid search results for SVM')
     plt.legend()
+    plt.ylim(newScores[-1].mean_validation_score, newScores[0].mean_validation_score * 1.01)
     plt.show()
