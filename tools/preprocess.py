@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+from scipy.stats import spearmanr
 
 # So that pyplot axis labels don't overflow out of screen
 rcParams.update({'figure.autolayout': True})
@@ -19,7 +20,7 @@ def trainTestSplit(features, labels, test_size=0.2):
 
 def stratifiedShuffleSplit(features, labels, folds=1000):
     from sklearn.cross_validation import StratifiedShuffleSplit
-    cv = StratifiedShuffleSplit(labels, folds, random_state = 42)
+    cv = StratifiedShuffleSplit(labels, folds)
     for train_idx, test_idx in cv:
         features_train = []
         features_test  = []
@@ -38,6 +39,14 @@ def minmaxScale(data):
     maxs = np.max(data, axis=0)
     data_normal = (data-mins)/(maxs-mins)
     return data_normal
+
+def defineCorrelation(x, y, features_list, data):
+    # Calculate spearman between x and y:
+    indexX = features_list.index(x)
+    indexY = features_list.index(y)
+    xarr = [row[indexX] for row in data]
+    yarr = [row[indexY] for row in data]
+    return spearmanr(xarr, yarr)
 
 def getFeatureImportance(features_train, labels_train, features_list, k):
     from sklearn.feature_selection import SelectKBest, f_classif
